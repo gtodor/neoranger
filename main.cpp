@@ -1,6 +1,28 @@
 #include <ncurses.h>
+#include <cassert>
 
-int main() {
+void move_cursor(int cursor_x,
+		 int cursor_y,
+		 int screen_width,
+		 int screen_height)
+{
+  assert(cursor_x >= 0 && cursor_x < screen_height);
+  assert(cursor_y >= 0 && cursor_y < screen_width);
+  move(cursor_x, cursor_y);
+}
+
+void increment_cursor(int& cursor, int max)
+{
+  if (cursor < max - 1) cursor++;
+}
+
+void decrement_cursor(int& cursor)
+{
+  if (cursor > 0) cursor--;
+}
+
+int main()
+{
   // init ncurses
   initscr();
 
@@ -25,20 +47,28 @@ int main() {
 
   bool isRunning = true;
   int ch;
+  int screen_width;
+  int screen_height;
   int cursor_x = 0;
   int cursor_y = 0;
   
+  
   while(isRunning) {
+    // the screen size could have changed so update the values
+    getmaxyx(stdscr, screen_height, screen_width);
+
+    // listen to key events
     ch = getch();
     switch (ch) {
     case 'q': isRunning = false; break;
-    case 'j': cursor_x++; break;
-    case 'k': cursor_x--; break;
-    case 'h': cursor_y--; break;
-    case 'l': cursor_y++; break;
+    case 'j': increment_cursor(cursor_x, screen_height); break;
+    case 'k': decrement_cursor(cursor_x); break;
+    case 'h': decrement_cursor(cursor_y); break;
+    case 'l': increment_cursor(cursor_y, screen_width); break;
     }
 
-    move(cursor_x, cursor_y);
+    // update those events
+    move_cursor(cursor_x, cursor_y, screen_width, screen_height);
     refresh();
   }
 
