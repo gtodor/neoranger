@@ -41,8 +41,7 @@ int main()
   start_color();
 
   // define color pairs
-  init_pair(1, COLOR_RED, COLOR_BLUE);
-  init_pair(2, COLOR_BLACK, COLOR_RED);
+  init_pair(1, COLOR_GREEN, COLOR_BLACK);
 
   // apply color pair 1
   wbkgd(stdscr, COLOR_PAIR(1));
@@ -73,6 +72,9 @@ int main()
     increment_cursor(cursor_x, screen_height);
     move_cursor(cursor_x, cursor_y, screen_width, screen_height);
   }
+
+  // init line highlight to current line
+  chgat(-1, A_REVERSE, 1, NULL);
   
   while(isRunning) {
     // the screen size could have changed so update the values
@@ -86,10 +88,18 @@ int main()
     case 'k': decrement_cursor(cursor_x); break;
     case 'h': decrement_cursor(cursor_y); break;
     case 'l': increment_cursor(cursor_y, screen_width); break;
+    case ERR: continue;
     }
 
-    // update those events
+    // before updating cursor position revert line highlight
+    chgat(-1, A_NORMAL, 1, NULL);
+    refresh();
+    
+    // update cursor position
     move_cursor(cursor_x, cursor_y, screen_width, screen_height);
+
+    // change attributes of whole line starting from cursor_x position
+    chgat(-1, A_REVERSE, 1, NULL);
     refresh();
   }
 
