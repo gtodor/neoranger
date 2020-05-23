@@ -1,4 +1,3 @@
-#include <iostream>
 #include <dirent.h>
 #include <string>
 #include <cstring>
@@ -39,10 +38,11 @@ fs_node_type fs_node::type() {
 }
 
 
-bool fs_explorer::initialize_folder(std::string path)
+void fs_explorer::initialize_folder()
 {
-  assert((m_current_node != NULL && m_filesystem != NULL) ||
-	 (m_current_node == NULL && m_filesystem == NULL));
+  assert(m_current_node != NULL && m_filesystem != NULL);
+
+  std::string path = m_current_node->absolute_path;
   
   DIR* dir;
   struct dirent* dir_entry;
@@ -50,35 +50,26 @@ bool fs_explorer::initialize_folder(std::string path)
     while ((dir_entry = readdir(dir)) != NULL) {
       // construct fs_node struct
       std::string entry_name(dir_entry->d_name);
-      if (m_filesystem == NULL) {
-	fs_node* node = new fs_node(NULL, entry_name);
-	m_filesystem = node;
-	m_current_node = node;
-
-	// TODO: regions should not overlap and only two visible 
-	region r(*node, 0, 0, 25, 23);
-	regions.push_back(r);
-	
-      } else {
-	std::string abs_path = m_current_node->absolute_path + "/" + entry_name;
-	fs_node* node = new fs_node(m_current_node, abs_path);
-	(m_current_node->content).push_back(node);
-      }
-	
+      std::string abs_path = m_current_node->absolute_path + "/" + entry_name;
+      fs_node* node = new fs_node(m_current_node, abs_path);
+      (m_current_node->content).push_back(node);
     }
     closedir(dir);
-    return true;
-  } else {
-    std::cerr<<"Error initializing: "<<strerror(errno)<<std::endl;
-    return false;
   }
 }
 
 
-fs_explorer::fs_explorer(std::string root_path): m_filesystem(NULL),
-						 m_current_node(NULL)
+fs_explorer::fs_explorer(std::string root_path)
 {
-  initialize_folder(root_path);
+  fs_node* node = new fs_node(NULL, root_path);
+  m_filesystem = node;
+  m_current_node = node;
+
+  // TODO: regions should not overlap and only two visible 
+  region r(*node, 0, 0, 50, 23);
+  regions.push_back(r);
+	
+  initialize_folder();
 }
 
 fs_explorer::~fs_explorer()

@@ -44,7 +44,7 @@ class fs_explorer {
   std::vector<region> regions;
 
   // initialize folder
-  bool initialize_folder(std::string path);
+  void initialize_folder();
 
  public:
   fs_explorer(std::string root_path);
