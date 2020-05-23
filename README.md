@@ -1,2 +1,2 @@
 # Neoranger
-A ncurses based file explorer with vi like keybindings. Written in C++
+A ncurses based file explorer. Written in C++
