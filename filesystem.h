@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+class region;
+
 enum fs_node_type {
   DIRECTORY,
   REGULAR_FILE,
@@ -31,12 +33,6 @@ struct fs_node {
   fs_node_type type();
 };
 
-// a view of the filesystem node to be rendered
-struct fs_node_render_info {
-  fs_node_type type;
-  std::string node_name;
-};
-
 
 class fs_explorer {
  private:
@@ -45,17 +41,20 @@ class fs_explorer {
   // pointer that handles the movement in the filesystem
   fs_node* m_current_node;
 
+  std::vector<region> regions;
+
   // initialize folder
   bool initialize_folder(std::string path);
 
  public:
   fs_explorer(std::string root_path);
   ~fs_explorer();
-  std::vector<fs_node_render_info> current_dir_render_data();
-  void move_down_in_current_dir();
-  void move_up_in_current_dir();
+  void move_down();
+  void move_up();
   void descend();
-  void ascend();
+void ascend();
+void draw_regions();
+void toggle_borders();
 };
 
 #endif // __FILESYSTEM_H__

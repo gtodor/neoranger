@@ -4,8 +4,9 @@
 #include <cstring>
 #include <cerrno>
 #include <cassert>
+#include <ncurses.h>
 #include "filesystem.h"
-
+#include "region.h"
 
 fs_node::fs_node(fs_node* parent,
 		 std::string absolute_path) : parent(parent),
@@ -37,6 +38,7 @@ fs_node_type fs_node::type() {
   }
 }
 
+
 bool fs_explorer::initialize_folder(std::string path)
 {
   assert((m_current_node != NULL && m_filesystem != NULL) ||
@@ -52,6 +54,11 @@ bool fs_explorer::initialize_folder(std::string path)
 	fs_node* node = new fs_node(NULL, entry_name);
 	m_filesystem = node;
 	m_current_node = node;
+
+	// TODO: regions should not overlap and only two visible 
+	region r(*node, 0, 0, 25, 23);
+	regions.push_back(r);
+	
       } else {
 	std::string abs_path = m_current_node->absolute_path + "/" + entry_name;
 	fs_node* node = new fs_node(m_current_node, abs_path);
@@ -79,28 +86,20 @@ fs_explorer::~fs_explorer()
   delete m_filesystem;
 }
 
-
-std::vector<fs_node_render_info> fs_explorer::current_dir_render_data()
+void fs_explorer::move_down()
 {
-  std::vector<fs_node_render_info> res;
-  for (unsigned int i = 0; i < (m_current_node->content).size(); i++) {
-    fs_node_render_info node_render_info;
-    node_render_info.type = m_current_node->content[i]->type();
-    node_render_info.node_name = m_current_node->content[i]->absolute_path;
-    res.push_back(node_render_info);
+  // move down in the latest region
+  if (regions.size() > 0) {
+    regions.back().move_down();
   }
-
-  return res;
 }
 
-void fs_explorer::move_down_in_current_dir()
+void fs_explorer::move_up()
 {
-
-}
-
-void fs_explorer::move_up_in_current_dir()
-{
-
+  // move up in the latest region
+  if (regions.size() > 0) {
+    regions.back().move_up();
+  }
 }
 
 void fs_explorer::descend()
@@ -111,4 +110,19 @@ void fs_explorer::descend()
 void fs_explorer::ascend()
 {
 
+}
+
+void fs_explorer::draw_regions()
+{
+  clear();
+  if (!regions.empty()) {
+    regions[0].draw();
+  }
+}
+
+void fs_explorer::toggle_borders()
+{
+  if (!regions.empty()) {
+    regions[0].toggle_border();
+  }
 }
