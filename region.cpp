@@ -1,4 +1,5 @@
 #include <ncurses.h>
+#include <string>
 #include "region.h"
 
 
@@ -36,9 +37,18 @@ void region::draw()
   int cur_x = draw_corner_x;
   // before printing init cursor position at first row
   move(cur_x, draw_corner_y);
-  // print files on screen
+
+  // print the node absolute path
+  addstr(m_node.absolute_path.c_str());
+  cur_x += 2;
+  move(cur_x, draw_corner_y);
+    
+  // next print files on screen
   for (unsigned int i = 0; i < m_node.content.size(); i++) {
-    addstr(m_node.content[i]->absolute_path.c_str());
+    std::string str = m_node.content[i]->absolute_path;
+    std::size_t found = str.find_last_of("/");
+    std::string filename = "./" + str.substr(found + 1);
+    addstr(filename.c_str());
     cur_x++;
     move(cur_x, draw_corner_y);
   }
@@ -49,7 +59,7 @@ void region::draw()
   }
 
   // move cursor back to last index
-  move(m_index + draw_corner_x, draw_corner_y);
+  move(m_index + draw_corner_x + 2, draw_corner_y);
 
   // init line highlight to current line
   chgat(width - 1, A_REVERSE, 1, NULL);

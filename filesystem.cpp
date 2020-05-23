@@ -66,7 +66,7 @@ fs_explorer::fs_explorer(std::string root_path)
   m_current_node = node;
 
   // TODO: regions should not overlap and only two visible 
-  region r(*node, 0, 0, 50, 23);
+  region r(*node, 0, 0, 30, 23);
   regions.push_back(r);
 	
   initialize_folder();
