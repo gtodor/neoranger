@@ -76,7 +76,6 @@ fs_explorer::fs_explorer(std::string root_path): m_filesystem(NULL),
 
 fs_explorer::~fs_explorer()
 {
-  // TODO: maybe it needs to delete all resources recurrsivly
   delete m_filesystem;
 }
 
