@@ -52,9 +52,9 @@ class fs_explorer {
   void move_down();
   void move_up();
   void descend();
-void ascend();
-void draw_regions();
-void toggle_borders();
+  void ascend();
+  void draw_regions();
+  void toggle_borders();
 };
 
 #endif // __FILESYSTEM_H__
