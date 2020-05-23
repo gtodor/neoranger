@@ -1,5 +1,7 @@
 #include <ncurses.h>
 #include <cassert>
+#include <string>
+#include "filesystem.h"
 
 void move_cursor(int cursor_x,
 		 int cursor_y,
@@ -51,7 +53,26 @@ int main()
   int screen_height;
   int cursor_x = 0;
   int cursor_y = 0;
-  
+
+  // initialize screen sizes
+  getmaxyx(stdscr, screen_height, screen_width);
+
+  const int PATH_LENGTH = 40;
+
+  char* path = new char[PATH_LENGTH];
+  getcwd(path, PATH_LENGTH);
+  std::string home_dir(path);
+  delete[] path;
+  fs_explorer explorer(home_dir);
+
+  std::vector<fs_node_render_info> nodes = explorer.current_dir_render_data();
+
+  // print files on screen
+  for (unsigned int i = 0; i < nodes.size(); i++) {
+    addstr(nodes[i].node_name.c_str());
+    increment_cursor(cursor_x, screen_height);
+    move_cursor(cursor_x, cursor_y, screen_width, screen_height);
+  }
   
   while(isRunning) {
     // the screen size could have changed so update the values
