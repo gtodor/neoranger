@@ -105,7 +105,7 @@ void fs_explorer::ascend()
 
 void fs_explorer::draw_regions()
 {
-  clear();
+  erase();
   if (!regions.empty()) {
     regions[0].draw();
   }
