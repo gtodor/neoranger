@@ -20,7 +20,7 @@ int main()
     start_color();
 
     // define color pairs
-    init_pair(1, COLOR_GREEN, COLOR_BLACK);
+    init_pair(1, COLOR_WHITE, COLOR_BLACK);
 
     // apply color pair 1
     wbkgd(stdscr, COLOR_PAIR(1));

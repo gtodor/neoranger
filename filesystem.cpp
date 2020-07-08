@@ -38,11 +38,24 @@ fs_node_type fs_node::type() {
     }
 }
 
+std::string getFilename(std::string path) {
+    std::size_t last_slash = path.find_last_of("/");
+    if (last_slash != std::string::npos) {
+        return path.substr(last_slash + 1);
+    }
+    return "";
+}
+
+bool is_dot_only_path(const fs_node* f) {
+    return getFilename(f->absolute_path) == "." || getFilename(f->absolute_path) == "..";
+}
+
 bool compare_by_absolute_path(const fs_node* f1, const fs_node* f2) {
     return f1->absolute_path < f2->absolute_path; 
 }
 
 void fs_node::sort() {
+    content.erase(std::remove_if(content.begin(), content.end(), is_dot_only_path), content.end());
     std::sort(content.begin(), content.end(), &compare_by_absolute_path);
 }
 
@@ -77,7 +90,7 @@ fs_explorer::fs_explorer(std::string root_path)
     current_absolute_path = node->content[0]->absolute_path;
 
     // TODO: regions should not overlap and only two visible 
-    region r(*node, 2, 0, 30, LINES - 1);
+    region r(*node, 1, 0, 30, LINES - 1);
     regions.push_back(r);
 
 }
