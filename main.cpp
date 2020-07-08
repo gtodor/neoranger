@@ -24,6 +24,8 @@ int main()
 
     // apply color pair 1
     wbkgd(stdscr, COLOR_PAIR(1));
+    
+    curs_set(0);
 
     bool isRunning = true;
     int ch;
