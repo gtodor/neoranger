@@ -14,7 +14,7 @@ fs_node::fs_node(fs_node* parent,
     content_initialized(false),
     content()
 {
-    stat(absolute_path.c_str(), &stats);
+    lstat(absolute_path.c_str(), &stats);
 }
 
 fs_node::~fs_node()

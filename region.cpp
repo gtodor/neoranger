@@ -42,10 +42,28 @@ void region::draw()
         std::string str = m_node.content[i]->absolute_path;
         std::size_t found = str.find_last_of("/");
         std::string filename = str.substr(found + 1);
+        switch (m_node.content[i]->type()) {
+            case REGULAR_FILE: {
+                attron(COLOR_PAIR(1));
+                if (m_node.content[i]->stats.st_mode & S_IXUSR) {
+                    attron(COLOR_PAIR(3));
+                }
+            } break;
+            case SOCKET: attron(COLOR_PAIR(2)); break;
+            case SYMBOLIC_LINK: attron(COLOR_PAIR(7)); break;
+            case BLOCK_DEVICE: attron(COLOR_PAIR(4)); break;
+            case DIRECTORY: attron(COLOR_PAIR(5)); break;
+            case CHARACTER_DEVICE: attron(COLOR_PAIR(6)); break;
+            case FIFO: attron(COLOR_PAIR(7)); break;
+            default: attron(COLOR_PAIR(1)); break;
+        }
         addstr(filename.c_str());
         cur_x++;
         move(cur_x, draw_corner_y);
     }
+
+    // reset color to white
+    attron(COLOR_PAIR(1));
 
     // draw border
     if (has_border) {
