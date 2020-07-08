@@ -71,13 +71,15 @@ fs_explorer::fs_explorer(std::string root_path)
 {
     fs_node* node = new fs_node(NULL, root_path);
     m_filesystem = node;
-    m_current_node = node;
+    m_current_node = node;  
+    initialize_folder();
+    node->sort();
+    current_absolute_path = node->content[0]->absolute_path;
 
     // TODO: regions should not overlap and only two visible 
-    region r(*node, 0, 0, 30, 23);
+    region r(*node, 2, 0, 30, LINES - 1);
     regions.push_back(r);
 
-    initialize_folder();
 }
 
 fs_explorer::~fs_explorer()
@@ -89,7 +91,7 @@ void fs_explorer::move_down()
 {
     // move down in the latest region
     if (regions.size() > 0) {
-        regions.back().move_down();
+        current_absolute_path = regions.back().move_down();
     }
 }
 
@@ -97,7 +99,7 @@ void fs_explorer::move_up()
 {
     // move up in the latest region
     if (regions.size() > 0) {
-        regions.back().move_up();
+        current_absolute_path = regions.back().move_up();
     }
 }
 
@@ -114,6 +116,11 @@ void fs_explorer::ascend()
 void fs_explorer::draw_regions()
 {
     erase();
+    
+    move(0, 0);
+    // print the node absolute path
+    addstr(current_absolute_path.c_str());
+
     if (!regions.empty()) {
         regions[0].draw();
     }

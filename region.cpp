@@ -1,5 +1,4 @@
 #include <ncurses.h>
-#include <string>
 #include "region.h"
 
 
@@ -38,12 +37,6 @@ void region::draw()
     // before printing init cursor position at first row
     move(cur_x, draw_corner_y);
 
-    // print the node absolute path
-    addstr(m_node.absolute_path.c_str());
-    cur_x += 2;
-    move(cur_x, draw_corner_y);
-    m_node.sort();
-
     // next print files on screen
     for (unsigned int i = 0; i < m_node.content.size(); i++) {
         std::string str = m_node.content[i]->absolute_path;
@@ -56,11 +49,11 @@ void region::draw()
 
     // draw border
     if (has_border) {
-        rectangle(top_left_y, top_left_x, top_left_y + height, top_left_y + width);
+        rectangle(top_left_x, top_left_y, top_left_y + height, top_left_x + width);
     }
 
     // move cursor back to last index
-    move(m_index + draw_corner_x + 2, draw_corner_y);
+    move(m_index + draw_corner_x, draw_corner_y);
 
     // init line highlight to current line
     chgat(width - 1, A_REVERSE, 1, NULL);
@@ -78,16 +71,20 @@ void region::toggle_border()
     }
 }
 
-void region::move_up()
+std::string region::move_up()
 {  
     if (m_index > 0) {
         m_index--;
+        return m_node.content[m_index]->absolute_path;
     }
+    return m_node.content[0]->absolute_path;
 }
 
-void region::move_down()
+std::string region::move_down()
 { 
     if ((unsigned int) m_index < m_node.content.size() - 1) {
         m_index++;
+        return m_node.content[m_index]->absolute_path;
     }
+    return m_node.content[m_node.content.size()-1]->absolute_path;
 }

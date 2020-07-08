@@ -1,6 +1,7 @@
 #ifndef __REGION_H__
 #define __REGION_H__
 
+#include <string>
 #include "filesystem.h"
 
 class region {
@@ -21,8 +22,8 @@ class region {
         region(fs_node& node, int x, int y, int w, int h);
         void draw();
         void toggle_border();
-        void move_up();
-        void move_down();
+        std::string move_up();
+        std::string move_down();
 };
 
 #endif // __REGION_H__
