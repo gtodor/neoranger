@@ -106,3 +106,11 @@ std::string region::move_down()
     }
     return m_node.content[m_node.content.size()-1]->absolute_path;
 }
+
+fs_node* region::selected_node() {
+	return m_node.content[m_index];
+}
+
+int region::posy() {
+	return top_left_y;
+}

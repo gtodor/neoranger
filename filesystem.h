@@ -37,10 +37,9 @@ struct fs_node {
 
 class fs_explorer {
     private:
-        fs_node* m_filesystem;
-
         // pointer that handles the movement in the filesystem
         fs_node* m_current_node;
+	int current_region;
 
         std::vector<region> regions;
 

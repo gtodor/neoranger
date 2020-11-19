@@ -40,10 +40,10 @@ int main()
 
     char* path = new char[PATH_LENGTH];
     getcwd(path, PATH_LENGTH);
-    std::string home_dir(path);
+    std::string current_dir(path);
     delete[] path;
 
-    fs_explorer explorer(home_dir);
+    fs_explorer explorer(current_dir);
 
     // initial draw
     explorer.draw_regions();
@@ -57,7 +57,7 @@ int main()
             case 'j': explorer.move_down(); break;
             case 'k': explorer.move_up(); break;
             case 'h': break;
-            case 'l': break;
+	    case 'l': explorer.descend(); break;
             case ERR: continue;
         }
 

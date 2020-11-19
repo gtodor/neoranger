@@ -24,6 +24,8 @@ class region {
         void toggle_border();
         std::string move_up();
         std::string move_down();
+	fs_node* selected_node();
+	int posy();
 };
 
 #endif // __REGION_H__
